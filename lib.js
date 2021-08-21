@@ -1,5 +1,7 @@
 // Helper functions that not coupled with game state are here, in separate file
 
+SETTINGS_STORAGE_KEY = "JSSnakeSettings"
+
 const CELL_TYPES = {
   empty: "empty",
   food: "food",
@@ -98,7 +100,7 @@ const drawRectangle = (
 const settingsFromStorage = () => {
   let settings;
   try {
-    settings = JSON.parse(localStorage.getItem("settings"));
+    settings = JSON.parse(localStorage.getItem(SETTINGS_STORAGE_KEY));
   } catch {}
   if (!settings || typeof settings !== "object") settings = {};
   return settings;

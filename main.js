@@ -126,7 +126,7 @@ const handleEvents = () => {
 
   document.getElementById("resetSettings").onclick = (e) => {
     e.preventDefault();
-    localStorage.setItem("settings", JSON.stringify(defaultSettings));
+    localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(defaultSettings));
     location.reload();
   };
 
@@ -183,7 +183,7 @@ const handleEvents = () => {
       }
     });
     if (validateSettings(settings)) {
-      localStorage.setItem("settings", JSON.stringify(settings));
+      localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
       location.reload();
     } else {
       alert("Wrong values. Try to change values and save one more time");
@@ -221,7 +221,7 @@ const segmentHeight = settings.canvas_size / settings.cell_num;
 
 settingsToElements(settings);
 
-localStorage.setItem("settings", JSON.stringify(settings));
+localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
 
 let food = generateFoodPosition(snakeSegments, settings.cell_num);
 
