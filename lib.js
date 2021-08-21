@@ -120,11 +120,10 @@ const fixSettings = (settings, defaultSettings) => {
   return settings;
 };
 
-const snakeAndFoodToMatrix = (snakeSegments, food = null) => {
-  const defaultMatrix = Array.from(Array(settings.cell_num)).map((_) =>
-    Array.from(Array(settings.cell_num)).map((_) => CELL_TYPES.empty)
+const snakeAndFoodToMatrix = (snakeSegments, cell_num, food = null) => {
+  const matrix = Array.from(Array(cell_num)).map((_) =>
+    Array.from(Array(cell_num)).map((_) => CELL_TYPES.empty)
   );
-  let matrix = JSON.parse(JSON.stringify(defaultMatrix));
   snakeSegments.forEach((segment, i) => {
     matrix[segment.y][segment.x] =
       i == snakeSegments.length - 1
@@ -135,8 +134,8 @@ const snakeAndFoodToMatrix = (snakeSegments, food = null) => {
   return matrix;
 };
 
-const generateFoodPosition = (snakeSegments, food = null) => {
-  const matrix = snakeAndFoodToMatrix(snakeSegments);
+const generateFoodPosition = (snakeSegments, cell_num, food = null) => {
+  const matrix = snakeAndFoodToMatrix(snakeSegments, cell_num);
   const availableCells = [];
   matrix.forEach((row, y) => {
     row.forEach((value, x) => {

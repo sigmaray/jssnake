@@ -77,7 +77,7 @@ const gameCycle = () => {
 
   if (!ate) snakeSegments.shift();
   else {
-    food = generateFoodPosition(snakeSegments, food);
+    food = generateFoodPosition(snakeSegments, settings.cell_num, food);
     if (!food) {
       endGame("You won!");
       return;
@@ -97,7 +97,7 @@ const gameCycle = () => {
   }
 
   renderMatrixToCanvas(
-    snakeAndFoodToMatrix(snakeSegments, food),
+    snakeAndFoodToMatrix(snakeSegments, settings.cell_num, food),
     elCanvas,
     segmentWidth,
     segmentHeight
@@ -140,7 +140,7 @@ const handleEvents = () => {
       p: 80,
     };
 
-    const values = Object.keys(keyCodes).map(e => keyCodes[e])
+    const values = Object.keys(keyCodes).map((e) => keyCodes[e]);
 
     if (values.includes(e.keyCode)) {
       e.preventDefault();
@@ -223,7 +223,7 @@ settingsToElements(settings);
 
 localStorage.setItem("settings", JSON.stringify(settings));
 
-let food = generateFoodPosition(snakeSegments);
+let food = generateFoodPosition(snakeSegments, settings.cell_num);
 
 const elCanvas = appendCanvas(settings.canvas_size);
 
@@ -232,7 +232,7 @@ handleEvents();
 unpauseGame();
 
 renderMatrixToCanvas(
-  snakeAndFoodToMatrix(snakeSegments, food),
+  snakeAndFoodToMatrix(snakeSegments, settings.cell_num, food),
   elCanvas,
   segmentWidth,
   segmentHeight
