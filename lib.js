@@ -74,17 +74,20 @@ const drawRectangle = (
   h,
   color = "#ccc",
   borderColor = "SlateBlue",
-  thickness = 2,
-  margin = 5
+  border = null,
+  margin = null
 ) => {
+  if (border === null) border = w * 0.05;
+  if (margin === null) margin = w * 0.1;
+
   ctx.fillStyle = borderColor;
   ctx.fillRect(x + margin, y + margin, w - margin * 2, h - margin * 2);
   ctx.fillStyle = color;
   ctx.fillRect(
-    x + thickness + margin,
-    y + thickness + margin,
-    w - thickness * 2 - margin * 2,
-    h - thickness * 2 - margin * 2
+    x + border + margin,
+    y + border + margin,
+    w - border * 2 - margin * 2,
+    h - border * 2 - margin * 2
   );
 };
 
