@@ -1,27 +1,18 @@
-// Helper functions that not coupled with game state are here, in separate file
-
-SETTINGS_STORAGE_KEY = "JSSnakeSettings"
-
-const CELL_TYPES = {
-  empty: "empty",
-  food: "food",
-  snakeSegment: "snakeSegment",
-  snakeHead: "snakeHead",
-};
+// Helper functions that are not coupled with game state
 
 const isEating = (snakeSegments, food) => {
   const head = snakeSegments.last();
   return head.x == food.x && head.y == food.y;
 };
 
-const isOut = (snakeSegments, cell_num) => {
+const isOut = (snakeSegments, cellNum) => {
   let is = false;
   snakeSegments.forEach((segment) => {
     if (
       segment.x < 0 ||
-      segment.x > cell_num - 1 ||
+      segment.x > cellNum - 1 ||
       segment.y < 0 ||
-      segment.y > cell_num - 1
+      segment.y > cellNum - 1
     ) {
       is = true;
     }
@@ -43,23 +34,22 @@ const isColliding = (snakeSegments) => {
 
 const validateSettings = (settings) => {
   let valid = true;
-  ["canvas_size", "cell_num", "interval_milliseconds"].forEach((key) => {
+  ["canvasSize", "cellNum", "intervalMilliseconds"].forEach((key) => {
     if (!settings[key] || Number.parseInt(settings[key]) <= 0) {
       valid = false;
     }
   });
 
   if (
-    Number.parseInt(settings["canvas_size"]) <
-    Number.parseInt(settings["cells"])
+    Number.parseInt(settings["canvasSize"]) < Number.parseInt(settings["cells"])
   )
     valid = false;
 
-  if (Number.parseInt("canvas_size") < 10) {
+  if (Number.parseInt(settings["canvasSize"]) < 10) {
     valid = false;
   }
 
-  if (Number.parseInt("cell_num") < 2) {
+  if (Number.parseInt(settings["cellNum"]) < 2) {
     valid = false;
   }
 
@@ -69,7 +59,7 @@ const validateSettings = (settings) => {
 const drawGameIsOver = (message = "Game is over") => {
   const ctx = elCanvas.getContext("2d");
   ctx.clearRect(0, 0, elCanvas.width, elCanvas.height);
-  ctx.fillStyle = "SlateBlue";
+  ctx.fillStyle = COLORS.text;
   ctx.font = "30px Arial";
   ctx.textBaseline = "middle";
   ctx.textAlign = "center";
@@ -83,10 +73,11 @@ const drawRectangle = (
   w,
   h,
   color = "#ccc",
+  borderColor = "SlateBlue",
   thickness = 2,
   margin = 5
 ) => {
-  ctx.fillStyle = "SlateBlue";
+  ctx.fillStyle = borderColor;
   ctx.fillRect(x + margin, y + margin, w - margin * 2, h - margin * 2);
   ctx.fillStyle = color;
   ctx.fillRect(
@@ -122,9 +113,9 @@ const fixSettings = (settings, defaultSettings) => {
   return settings;
 };
 
-const snakeAndFoodToMatrix = (snakeSegments, cell_num, food = null) => {
-  const matrix = Array.from(Array(cell_num)).map((_) =>
-    Array.from(Array(cell_num)).map((_) => CELL_TYPES.empty)
+const snakeAndFoodToMatrix = (snakeSegments, cellNum, food = null) => {
+  const matrix = Array.from(Array(cellNum)).map((_) =>
+    Array.from(Array(cellNum)).map((_) => CELL_TYPES.empty)
   );
   snakeSegments.forEach((segment, i) => {
     matrix[segment.y][segment.x] =
@@ -136,8 +127,8 @@ const snakeAndFoodToMatrix = (snakeSegments, cell_num, food = null) => {
   return matrix;
 };
 
-const generateFoodPosition = (snakeSegments, cell_num, food = null) => {
-  const matrix = snakeAndFoodToMatrix(snakeSegments, cell_num);
+const generateFoodPosition = (snakeSegments, cellNum, food = null) => {
+  const matrix = snakeAndFoodToMatrix(snakeSegments, cellNum);
   const availableCells = [];
   matrix.forEach((row, y) => {
     row.forEach((value, x) => {
@@ -155,10 +146,12 @@ const generateFoodPosition = (snakeSegments, cell_num, food = null) => {
 const settingsToElements = (settings) => {
   Object.keys(settings).forEach((key) => {
     const el = document.getElementById(key);
-    if (typeof settings[key] == "boolean") {
-      el.checked = settings[key];
-    } else if (typeof settings[key] == "number") {
-      el.value = settings[key];
+    if (el) {
+      if (typeof settings[key] == "boolean") {
+        el.checked = settings[key];
+      } else if (typeof settings[key] == "number") {
+        el.value = settings[key];
+      }
     }
   });
 };
@@ -176,11 +169,11 @@ const renderMatrixToCanvas = (
       if (value !== CELL_TYPES.empty) {
         let color;
         if (value === CELL_TYPES.snakeSegment) {
-          color = "CornflowerBlue";
+          color = COLORS.snakeSegment;
         } else if (value === CELL_TYPES.snakeHead) {
-          color = "white";
+          color = COLORS.snakeHead;
         } else if (value === CELL_TYPES.food) {
-          color = "#DDA0DD";
+          color = COLORS.food;
         }
 
         drawRectangle(
@@ -189,25 +182,26 @@ const renderMatrixToCanvas = (
           y * segmentHeight,
           segmentHeight,
           segmentWidth,
-          color
+          color,
+          COLORS.segmentBorder
         );
       }
     });
   });
 };
 
-const appendCanvas = (canvas_size) => {
+const appendCanvas = (canvasSize) => {
   const elCanvas = document.createElement("canvas");
   elCanvas.setAttribute(
     "style",
     `
-      background-color: #eee;    
+      background-color: ${COLORS.canvasColor};    
       margin-top: 2rem;
     `
   );
 
-  elCanvas.setAttribute("width", canvas_size);
-  elCanvas.setAttribute("height", canvas_size);
+  elCanvas.setAttribute("width", canvasSize);
+  elCanvas.setAttribute("height", canvasSize);
   document.body.appendChild(elCanvas);
   return elCanvas;
 };

@@ -8,17 +8,17 @@ const endGame = (message = "Game is over") => {
 };
 
 const gameCycle = () => {
-  let ate = false;
+  let ateFood = false;
 
-  if (isEating(snakeSegments, food)) {
-    ate = true;
+  if (isEating(state.snakeSegments, state.food)) {
+    ateFood = true;
   }
 
-  const head = snakeSegments.last();
+  const head = state.snakeSegments.last();
   let newHead = JSON.parse(JSON.stringify(head));
-  switch (snakeDirection) {
+  switch (state.snakeDirection) {
     case "right":
-      if (head.x < settings.cell_num - 1 || settings.check_is_out) {
+      if (head.x < settings.cellNum - 1 || settings.checkIsOut) {
         newHead = {
           x: head.x + 1,
           y: head.y,
@@ -32,21 +32,21 @@ const gameCycle = () => {
 
       break;
     case "left":
-      if (head.x > 0 || settings.check_is_out) {
+      if (head.x > 0 || settings.checkIsOut) {
         newHead = {
           x: head.x - 1,
           y: head.y,
         };
       } else {
         newHead = {
-          x: settings.cell_num - 1,
+          x: settings.cellNum - 1,
           y: head.y,
         };
       }
 
       break;
     case "up":
-      if (head.y > 0 || settings.check_is_out) {
+      if (head.y > 0 || settings.checkIsOut) {
         newHead = {
           x: head.x,
           y: head.y - 1,
@@ -54,13 +54,13 @@ const gameCycle = () => {
       } else {
         newHead = {
           x: head.x,
-          y: settings.cell_num - 1,
+          y: settings.cellNum - 1,
         };
       }
 
       break;
     case "down":
-      if (head.y < settings.cell_num - 1 || settings.check_is_out) {
+      if (head.y < settings.cellNum - 1 || settings.checkIsOut) {
         newHead = {
           x: head.x,
           y: head.y + 1,
@@ -75,43 +75,49 @@ const gameCycle = () => {
       break;
   }
 
-  if (!ate) snakeSegments.shift();
+  if (!ateFood) state.snakeSegments.shift();
   else {
-    food = generateFoodPosition(snakeSegments, settings.cell_num, food);
-    if (!food) {
+    state.food = generateFoodPosition(
+      state.snakeSegments,
+      settings.cellNum,
+      state.food
+    );
+    if (!state.food) {
       endGame("You won!");
       return;
     }
   }
 
-  snakeSegments.push(newHead);
+  state.snakeSegments.push(newHead);
 
-  if (settings.check_is_out && isOut(snakeSegments, settings.cell_num)) {
+  if (settings.checkIsOut && isOut(state.snakeSegments, settings.cellNum)) {
     endGame("Snake is out of board. You lost");
     return;
   }
 
-  if (settings.check_is_colliding && isColliding(snakeSegments)) {
+  if (settings.checkIsColliding && isColliding(state.snakeSegments)) {
     endGame("Snake collision. You lost");
     return;
   }
 
   renderMatrixToCanvas(
-    snakeAndFoodToMatrix(snakeSegments, settings.cell_num, food),
+    snakeAndFoodToMatrix(state.snakeSegments, settings.cellNum, state.food),
     elCanvas,
     segmentWidth,
     segmentHeight
   );
+
+  state.switchingDirection = false;
 };
 
 const unpauseGame = () => {
-  isPaused = false;
-  interval = setInterval(gameCycle, settings.interval_milliseconds);
+  state.isPaused = false;
+  interval = setInterval(gameCycle, settings.intervalMilliseconds);
 };
 
 const pauseUnpause = () => {
-  if (!isPaused) {
-    isPaused = true;
+  if (!state.isPaused) {
+    state.isPaused = true;
     clearInterval(interval);
   } else {
     unpauseGame();
@@ -147,20 +153,40 @@ const handleEvents = () => {
 
       switch (e.keyCode) {
         case keyCodes.right:
-          if (snakeDirection != "right" && snakeDirection != "left")
-            snakeDirection = "right";
+          if (
+            !state.switchingDirection &&
+            state.snakeDirection != "right" &&
+            state.snakeDirection != "left"
+          )
+            state.snakeDirection = "right";
+          state.switchingDirection = true;
           break;
         case keyCodes.left:
-          if (snakeDirection != "left" && snakeDirection != "right")
-            snakeDirection = "left";
+          if (
+            !state.switchingDirection &&
+            state.snakeDirection != "left" &&
+            state.snakeDirection != "right"
+          )
+            state.snakeDirection = "left";
+          state.switchingDirection = true;
           break;
         case keyCodes.up:
-          if (snakeDirection != "up" && snakeDirection != "down")
-            snakeDirection = "up";
+          if (
+            !state.switchingDirection &&
+            state.snakeDirection != "up" &&
+            state.snakeDirection != "down"
+          )
+            state.snakeDirection = "up";
+          state.switchingDirection = true;
           break;
         case keyCodes.down:
-          if (snakeDirection != "down" && snakeDirection != "up")
-            snakeDirection = "down";
+          if (
+            !state.switchingDirection &&
+            state.snakeDirection != "down" &&
+            state.snakeDirection != "up"
+          )
+            state.snakeDirection = "down";
+          state.switchingDirection = true;
           break;
         case keyCodes.p:
           pauseUnpause();
@@ -192,14 +218,26 @@ const handleEvents = () => {
 };
 
 const defaultSettings = {
-  canvas_size: 500,
-  cell_num: 15,
-  interval_milliseconds: 150,
-  check_is_out: false,
-  check_is_colliding: false,
+  canvasSize: 500,
+  cellNum: 15,
+  intervalMilliseconds: 150,
+  checkIsOut: false,
+  checkIsColliding: false,
 };
 
-let snakeSegments = [
+let interval;
+
+let settings = settingsFromStorage();
+settings = fixSettings(settings, defaultSettings);
+
+const segmentWidth = settings.canvasSize / settings.cellNum;
+const segmentHeight = settings.canvasSize / settings.cellNum;
+
+settingsToElements(settings);
+
+localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
+
+const snakeSegments = [
   { x: 0, y: 0 },
   { x: 1, y: 0 },
   { x: 2, y: 0 },
@@ -207,32 +245,25 @@ let snakeSegments = [
   { x: 4, y: 0 },
 ];
 
-let snakeDirection = "right";
+const food = generateFoodPosition(snakeSegments, settings.cellNum);
 
-let interval;
+let state = {
+  snakeDirection: "right",
+  isPaused: true,
+  snakeSegments,
+  food,
+  switchingDirection: false,
+};
 
-let isPaused = true;
-
-let settings = settingsFromStorage();
-settings = fixSettings(settings, defaultSettings);
-
-const segmentWidth = settings.canvas_size / settings.cell_num;
-const segmentHeight = settings.canvas_size / settings.cell_num;
-
-settingsToElements(settings);
-
-localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
-
-let food = generateFoodPosition(snakeSegments, settings.cell_num);
-
-const elCanvas = appendCanvas(settings.canvas_size);
+// Canvas size depends on settings, that's why we append canvas dynamically
+const elCanvas = appendCanvas(settings.canvasSize);
 
 handleEvents();
 
 unpauseGame();
 
 renderMatrixToCanvas(
-  snakeAndFoodToMatrix(snakeSegments, settings.cell_num, food),
+  snakeAndFoodToMatrix(state.snakeSegments, settings.cellNum, state.food),
   elCanvas,
   segmentWidth,
   segmentHeight
