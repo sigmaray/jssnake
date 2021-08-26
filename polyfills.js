@@ -6,6 +6,7 @@ if (!Array.prototype.last) {
 
 if (!Array.prototype.random) {
   Array.prototype.random = function () {
-    return this?.[Math.floor(Math.random() * this.length)];
+    if (this.length > 0) return this[Math.floor(Math.random() * this.length)];
+    else return null;
   };
 }
