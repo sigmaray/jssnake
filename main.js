@@ -126,14 +126,25 @@ const pauseUnpause = () => {
 
 const handleEvents = () => {
   document.getElementById("pauseUnpause").onclick = (e) => {
-    e.preventDefault();
     pauseUnpause();
   };
 
   document.getElementById("resetSettings").onclick = (e) => {
-    e.preventDefault();
     localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(defaultSettings));
     location.reload();
+  };
+
+  document.getElementById("showHelp").onclick = (e) => {
+    alert(`
+Help
+----
+Controls:      
+* pause/unpause: p key
+* move: left/right/up/down keys
+* restart: ctrl+r/f5
+
+Settings are being saved in web storage
+    `.trim());
   };
 
   document.addEventListener("keydown", (e) => {
