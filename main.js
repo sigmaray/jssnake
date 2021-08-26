@@ -110,17 +110,13 @@ const gameCycle = () => {
   state.switchingDirection = false;
 };
 
-const unpauseGame = () => {
-  state.isPaused = false;
-  interval = setInterval(gameCycle, settings.intervalMilliseconds);
-};
-
 const pauseUnpause = () => {
   if (!state.isPaused) {
     state.isPaused = true;
     clearInterval(interval);
   } else {
-    unpauseGame();
+    state.isPaused = false;
+    interval = setInterval(gameCycle, settings.intervalMilliseconds);
   }
 };
 
@@ -130,12 +126,16 @@ const handleEvents = () => {
   };
 
   document.getElementById("resetSettings").onclick = (e) => {
-    localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(DEFAULT_SETTINGS));
+    localStorage.setItem(
+      SETTINGS_STORAGE_KEY,
+      JSON.stringify(DEFAULT_SETTINGS)
+    );
     location.reload();
   };
 
   document.getElementById("showHelp").onclick = (e) => {
-    alert(`
+    alert(
+      `
 Help
 ----
 Controls:      
@@ -144,7 +144,8 @@ Controls:
 * restart: ctrl+r/f5
 
 Settings are being saved in web storage
-    `.trim());
+    `.trim()
+    );
   };
 
   document.addEventListener("keydown", (e) => {
@@ -252,7 +253,7 @@ const food = generateFoodPosition(snakeSegments, settings.cellNum);
 
 let state = {
   snakeDirection: "right",
-  isPaused: true,
+  isPaused: false,
   snakeSegments,
   food,
   switchingDirection: false,
@@ -263,7 +264,7 @@ const elCanvas = appendCanvas(settings.canvasSize);
 
 handleEvents();
 
-unpauseGame();
+interval = setInterval(gameCycle, settings.intervalMilliseconds);
 
 renderMatrixToCanvas(
   snakeAndFoodToMatrix(state.snakeSegments, settings.cellNum, state.food),
