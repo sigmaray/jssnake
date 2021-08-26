@@ -130,7 +130,7 @@ const handleEvents = () => {
   };
 
   document.getElementById("resetSettings").onclick = (e) => {
-    localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(defaultSettings));
+    localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(DEFAULT_SETTINGS));
     location.reload();
   };
 
@@ -228,18 +228,10 @@ Settings are being saved in web storage
   };
 };
 
-const defaultSettings = {
-  canvasSize: 500,
-  cellNum: 15,
-  intervalMilliseconds: 150,
-  checkIsOut: false,
-  checkIsColliding: false,
-};
-
 let interval;
 
 let settings = settingsFromStorage();
-settings = fixSettings(settings, defaultSettings);
+settings = fixSettings(settings, DEFAULT_SETTINGS);
 
 const segmentWidth = settings.canvasSize / settings.cellNum;
 const segmentHeight = settings.canvasSize / settings.cellNum;

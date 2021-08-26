@@ -15,3 +15,11 @@ COLORS = {
   text: "SlateBlue",
   canvasColor: '#eee'
 };
+
+const DEFAULT_SETTINGS = {
+  canvasSize: 500,
+  cellNum: 15,
+  intervalMilliseconds: 150,
+  checkIsOut: false,
+  checkIsColliding: false,
+};

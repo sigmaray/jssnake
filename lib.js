@@ -97,16 +97,16 @@ const settingsFromStorage = () => {
   return settings;
 };
 
-const fixSettings = (settings, defaultSettings) => {
-  Object.keys(defaultSettings).forEach((key) => {
-    if (typeof defaultSettings[key] == "boolean") {
+const fixSettings = (settings, DEFAULT_SETTINGS) => {
+  Object.keys(DEFAULT_SETTINGS).forEach((key) => {
+    if (typeof DEFAULT_SETTINGS[key] == "boolean") {
       if (typeof settings[key] !== "boolean") {
-        settings[key] = defaultSettings[key];
+        settings[key] = DEFAULT_SETTINGS[key];
       }
-    } else if (typeof defaultSettings[key] == "number") {
+    } else if (typeof DEFAULT_SETTINGS[key] == "number") {
       settings[key] = Number.parseInt(settings[key]);
       if (!settings[key] || settings[key] < 0) {
-        settings[key] = defaultSettings[key];
+        settings[key] = DEFAULT_SETTINGS[key];
       }
     }
   });
