@@ -8,11 +8,7 @@ const endGame = (message = "Game is over") => {
 };
 
 const gameCycle = () => {
-  let ateFood = false;
-
-  if (isEating(state.snakeSegments, state.food)) {
-    ateFood = true;
-  }
+  const ateFood = isEating(state.snakeSegments, state.food);
 
   const head = state.snakeSegments.last();
   let newHead = JSON.parse(JSON.stringify(head));
@@ -163,46 +159,48 @@ Settings are being saved in web storage
     if (values.includes(e.keyCode)) {
       e.preventDefault();
 
-      switch (e.keyCode) {
-        case keyCodes.right:
-          if (
-            !state.switchingDirection &&
-            state.snakeDirection != "right" &&
-            state.snakeDirection != "left"
-          )
-            state.snakeDirection = "right";
-          state.switchingDirection = true;
-          break;
-        case keyCodes.left:
-          if (
-            !state.switchingDirection &&
-            state.snakeDirection != "left" &&
-            state.snakeDirection != "right"
-          )
-            state.snakeDirection = "left";
-          state.switchingDirection = true;
-          break;
-        case keyCodes.up:
-          if (
-            !state.switchingDirection &&
-            state.snakeDirection != "up" &&
-            state.snakeDirection != "down"
-          )
-            state.snakeDirection = "up";
-          state.switchingDirection = true;
-          break;
-        case keyCodes.down:
-          if (
-            !state.switchingDirection &&
-            state.snakeDirection != "down" &&
-            state.snakeDirection != "up"
-          )
-            state.snakeDirection = "down";
-          state.switchingDirection = true;
-          break;
-        case keyCodes.p:
-          pauseUnpause();
-          break;
+      if (!state.switchingDirection) {
+        switch (e.keyCode) {
+          case keyCodes.right:
+            if (
+              state.snakeDirection != "right" &&
+              state.snakeDirection != "left"
+            ) {
+              state.snakeDirection = "right";
+              state.switchingDirection = true;
+            }
+            break;
+          case keyCodes.left:
+            if (
+              state.snakeDirection != "left" &&
+              state.snakeDirection != "right"
+            ) {
+              state.snakeDirection = "left";
+              state.switchingDirection = true;
+            }
+            break;
+          case keyCodes.up:
+            if (
+              state.snakeDirection != "up" &&
+              state.snakeDirection != "down"
+            ) {
+              state.snakeDirection = "up";
+              state.switchingDirection = true;
+            }
+            break;
+          case keyCodes.down:
+            if (
+              state.snakeDirection != "down" &&
+              state.snakeDirection != "up"
+            ) {
+              state.snakeDirection = "down";
+              state.switchingDirection = true;
+            }
+            break;
+          case keyCodes.p:
+            pauseUnpause();
+            break;
+        }
       }
     }
   });
@@ -232,12 +230,16 @@ Settings are being saved in web storage
 let interval;
 
 let settings = settingsFromStorage();
+
+// We can have broken settings in web storage.
+// (for example settings from previous version)
+// If settings have wrong values, we are fixing them.
 settings = fixSettings(settings, DEFAULT_SETTINGS);
 
 const segmentWidth = settings.canvasSize / settings.cellNum;
 const segmentHeight = settings.canvasSize / settings.cellNum;
 
-settingsToElements(settings);
+settingsToFormElements(settings);
 
 localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
 

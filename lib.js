@@ -6,7 +6,7 @@ const isEating = (snakeSegments, food) => {
 };
 
 const isOut = (snakeSegments, cellNum) => {
-  let is = false;
+  let out = false;
   snakeSegments.forEach((segment) => {
     if (
       segment.x < 0 ||
@@ -14,10 +14,10 @@ const isOut = (snakeSegments, cellNum) => {
       segment.y < 0 ||
       segment.y > cellNum - 1
     ) {
-      is = true;
+      out = true;
     }
   });
-  return is;
+  return out;
 };
 
 const isColliding = (snakeSegments) => {
@@ -41,7 +41,7 @@ const validateSettings = (settings) => {
   });
 
   if (
-    Number.parseInt(settings["canvasSize"]) < Number.parseInt(settings["cells"])
+    Number.parseInt(settings["canvasSize"]) < Number.parseInt(settings["cellNum"])
   )
     valid = false;
 
@@ -146,7 +146,7 @@ const generateFoodPosition = (snakeSegments, cellNum, food = null) => {
   return availableCells.random();
 };
 
-const settingsToElements = (settings) => {
+const settingsToFormElements = (settings) => {
   Object.keys(settings).forEach((key) => {
     const el = document.getElementById(key);
     if (el) {
