@@ -1,26 +1,27 @@
-// Helper functions that are not coupled with game state
+// Immutable helper functions
+// Putting lib into window object to avoid eslint warnings
 
-const isEating = (snakeSegments, food) => {
+window.lib = {};
+
+// Check if snake intersects with the food. Return true/false
+window.lib.isEating = (snakeSegments, food) => {
   const head = snakeSegments.last();
-  return head.x == food.x && head.y == food.y;
+  return head.x === food.x && head.y === food.y;
 };
 
-const isOut = (snakeSegments, cellNum) => {
+// Check if snake runs out of game board. Return true/false
+window.lib.isOut = (snakeSegments, cellNum) => {
   let out = false;
   snakeSegments.forEach((segment) => {
-    if (
-      segment.x < 0 ||
-      segment.x > cellNum - 1 ||
-      segment.y < 0 ||
-      segment.y > cellNum - 1
-    ) {
+    if (segment.x < 0 || segment.x > cellNum - 1 || segment.y < 0 || segment.y > cellNum - 1) {
       out = true;
     }
   });
   return out;
 };
 
-const isColliding = (snakeSegments) => {
+// Check if snake collides with itsef. Return true/false
+window.lib.isColliding = (snakeSegments) => {
   let is = false;
   snakeSegments.forEach((segment, i) => {
     snakeSegments.forEach((segment2, j) => {
@@ -32,103 +33,113 @@ const isColliding = (snakeSegments) => {
   return is;
 };
 
-const validateSettings = (settings) => {
+// Validate settings object. Return true/false
+window.lib.validateSettings = (settings) => {
   let valid = true;
-  ["cellSize", "cellNum", "intervalMilliseconds"].forEach((key) => {
-    if (!settings[key] || Number.parseInt(settings[key]) <= 0) {
+  ['cellSize', 'cellNum', 'intervalMilliseconds'].forEach((key) => {
+    if (
+      !settings[key]
+      || Number.isNaN(Number.parseInt(settings[key], 10))
+      || Number.parseInt(settings[key], 10) <= 0
+    ) {
       valid = false;
     }
   });
 
-  if (Number.parseInt(settings["cellNum"]) < 2) {
+  if (Number.parseInt(settings.cellNum, 10) < 2) {
     valid = false;
   }
 
   return valid;
 };
 
-const drawGameIsOver = (elCanvas, message = "Game is over") => {
-  const ctx = elCanvas.getContext("2d");
+// Draw a message on <canvas>
+window.lib.drawGameIsOver = (elCanvas, message = 'Game is over') => {
+  const ctx = elCanvas.getContext('2d');
   ctx.clearRect(0, 0, elCanvas.width, elCanvas.height);
-  ctx.fillStyle = COLORS.text;
-  ctx.font = "30px Arial";
-  ctx.textBaseline = "middle";
-  ctx.textAlign = "center";
+  ctx.fillStyle = window.constants.COLORS.text;
+  ctx.font = '30px Arial';
+  ctx.textBaseline = 'middle';
+  ctx.textAlign = 'center';
   ctx.fillText(message, elCanvas.width / 2, elCanvas.height / 2);
 };
 
-const drawRectangle = (
+// Draw snake/food cell on canvas
+window.lib.drawRectangle = (
   ctx,
   x,
   y,
   w,
   h,
-  color = "#ccc",
-  borderColor = "SlateBlue",
+  color = '#ccc',
+  borderColor = 'SlateBlue',
   border = null,
-  margin = null
+  margin = null,
 ) => {
-  if (border === null) border = w * 0.05;
-  if (margin === null) margin = w * 0.1;
+  let b = border;
+  let m = margin;
+
+  if (b === null) b = w * 0.05;
+  if (m === null) m = w * 0.1;
 
   ctx.fillStyle = borderColor;
-  ctx.fillRect(x + margin, y + margin, w - margin * 2, h - margin * 2);
+  ctx.fillRect(x + m, y + m, w - m * 2, h - m * 2);
   ctx.fillStyle = color;
-  ctx.fillRect(
-    x + border + margin,
-    y + border + margin,
-    w - border * 2 - margin * 2,
-    h - border * 2 - margin * 2
-  );
+  ctx.fillRect(x + b + m, y + b + m, w - b * 2 - m * 2, h - b * 2 - m * 2);
 };
 
-const settingsFromStorage = () => {
+// Load settings from local storage and return them as object
+window.lib.settingsFromStorage = () => {
   let settings;
   try {
-    settings = JSON.parse(localStorage.getItem(SETTINGS_STORAGE_KEY));
-  } catch {
+    settings = JSON.parse(localStorage.getItem(window.constants.SETTINGS_STORAGE_KEY));
+  } catch (error) {
     settings = {};
   }
-  if (!settings || typeof settings !== "object") settings = {};
+  if (!settings || typeof settings !== 'object') settings = {};
   return settings;
 };
 
-const fixSettings = (settings, DEFAULT_SETTINGS) => {
+// If settings object have wrong values: replace broken values with default values
+window.lib.fixSettings = (settings, DEFAULT_SETTINGS) => {
+  const fixedSettings = { ...settings };
   Object.keys(DEFAULT_SETTINGS).forEach((key) => {
-    if (typeof DEFAULT_SETTINGS[key] == "boolean") {
-      if (typeof settings[key] !== "boolean") {
-        settings[key] = DEFAULT_SETTINGS[key];
+    if (typeof DEFAULT_SETTINGS[key] === 'boolean') {
+      if (typeof settings[key] !== 'boolean') {
+        fixedSettings[key] = DEFAULT_SETTINGS[key];
       }
-    } else if (typeof DEFAULT_SETTINGS[key] == "number") {
-      settings[key] = Number.parseInt(settings[key]);
-      if (!settings[key] || settings[key] < 0) {
-        settings[key] = DEFAULT_SETTINGS[key];
+    } else if (typeof DEFAULT_SETTINGS[key] === 'number') {
+      fixedSettings[key] = Number.parseInt(settings[key], 10);
+      if (!fixedSettings[key] || fixedSettings[key] < 0) {
+        fixedSettings[key] = DEFAULT_SETTINGS[key];
       }
     }
   });
-  return settings;
+  return fixedSettings;
 };
 
-const snakeAndFoodToMatrix = (snakeSegments, cellNum, food = null) => {
-  const matrix = Array.from(Array(cellNum)).map(() =>
-    Array.from(Array(cellNum)).map(() => CELL_TYPES.empty)
+// Put snake segments and food into 2d array that models game board
+window.lib.snakeAndFoodToMatrix = (snakeSegments, cellNum, food = null) => {
+  const matrix = Array.from(Array(cellNum)).map(
+    // eslint-disable-next-line
+    () => Array.from(Array(cellNum)).map(() => window.constants.CELL_TYPES.empty)
   );
   snakeSegments.forEach((segment, i) => {
-    matrix[segment.y][segment.x] =
-      i == snakeSegments.length - 1
-        ? CELL_TYPES.snakeHead
-        : CELL_TYPES.snakeSegment;
+    matrix[segment.y][segment.x] = i === snakeSegments.length - 1
+      ? window.constants.CELL_TYPES.snakeHead
+      : window.constants.CELL_TYPES.snakeSegment;
   });
-  if (food) matrix[food.y][food.x] = CELL_TYPES.food;
+  if (food) matrix[food.y][food.x] = window.constants.CELL_TYPES.food;
   return matrix;
 };
 
-const generateFoodPosition = (snakeSegments, cellNum) => {
-  const matrix = snakeAndFoodToMatrix(snakeSegments, cellNum);
+// Generate new food at random board cell not occupied by snake
+window.lib.generateFoodPosition = (snakeSegments, cellNum) => {
+  const matrix = window.lib.snakeAndFoodToMatrix(snakeSegments, cellNum);
   const availableCells = [];
   matrix.forEach((row, y) => {
     row.forEach((value, x) => {
-      if (value === CELL_TYPES.empty) {
+      if (value === window.constants.CELL_TYPES.empty) {
         availableCells.push({
           x,
           y,
@@ -139,64 +150,64 @@ const generateFoodPosition = (snakeSegments, cellNum) => {
   return availableCells.random();
 };
 
-const settingsToFormElements = (settings) => {
+// Modify UI form elements according to settings object values
+// Mutates dom elements (<input>) values
+window.lib.settingsToFormElements = (settings) => {
   Object.keys(settings).forEach((key) => {
     const el = document.getElementById(key);
     if (el) {
-      if (typeof settings[key] == "boolean") {
+      if (typeof settings[key] === 'boolean') {
         el.checked = settings[key];
-      } else if (typeof settings[key] == "number") {
+      } else if (typeof settings[key] === 'number') {
         el.value = settings[key];
       }
     }
   });
 };
 
-const renderMatrixToCanvas = (
-  matrix,
-  elCanvas,
-  cellSize
-) => {
-  const ctx = elCanvas.getContext("2d");
+// Draw matrix (2d array that models game board) on <canvas>
+window.lib.renderMatrixToCanvas = (matrix, elCanvas, cellSize) => {
+  const ctx = elCanvas.getContext('2d');
   ctx.clearRect(0, 0, elCanvas.width, elCanvas.height);
   matrix.forEach((row, y) => {
     row.forEach((value, x) => {
-      if (value !== CELL_TYPES.empty) {
+      if (value !== window.constants.CELL_TYPES.empty) {
         let color;
-        if (value === CELL_TYPES.snakeSegment) {
-          color = COLORS.snakeSegment;
-        } else if (value === CELL_TYPES.snakeHead) {
-          color = COLORS.snakeHead;
-        } else if (value === CELL_TYPES.food) {
-          color = COLORS.food;
+        if (value === window.constants.CELL_TYPES.snakeSegment) {
+          color = window.constants.COLORS.snakeSegment;
+        } else if (value === window.constants.CELL_TYPES.snakeHead) {
+          color = window.constants.COLORS.snakeHead;
+        } else if (value === window.constants.CELL_TYPES.food) {
+          color = window.constants.COLORS.food;
         }
 
-        drawRectangle(
+        window.lib.drawRectangle(
           ctx,
           x * cellSize,
           y * cellSize,
           cellSize,
           cellSize,
           color,
-          COLORS.segmentBorder
+          window.constants.COLORS.segmentBorder,
         );
       }
     });
   });
 };
 
-const appendCanvas = (cellNum, cellSize) => {
-  const elCanvas = document.createElement("canvas");
+// Dynamicall add <canvas> element
+window.lib.appendCanvas = (cellNum, cellSize) => {
+  const elCanvas = document.createElement('canvas');
   elCanvas.setAttribute(
-    "style",
+    'style',
     `
-      background-color: ${COLORS.canvasColor};    
+      background-color: ${window.constants.COLORS.canvasColor};
       margin-top: 2rem;
-    `
+    `,
   );
 
-  elCanvas.setAttribute("width", cellSize * cellNum);
-  elCanvas.setAttribute("height", cellSize * cellNum);
+  elCanvas.setAttribute('width', cellSize * cellNum);
+  elCanvas.setAttribute('height', cellSize * cellNum);
   document.body.appendChild(elCanvas);
   return elCanvas;
 };

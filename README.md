@@ -1,6 +1,6 @@
 # JavaScript Snake
 
-Classic snake with a few improvements.
+Classic snake game with few improvements.
 
 I have added settings to the game:
 * Check if snake goes out of game board. If checkbox is set game will end, otherwise it will continue
@@ -10,6 +10,8 @@ I have added settings to the game:
 * Canvas size
 
 Settings are save in web storage.
+
+Game is implemented in vanilla JS without using any framework or webpack. package.json is used only for eslint
 
 ## Demo
 
