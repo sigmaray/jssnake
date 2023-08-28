@@ -1,4 +1,4 @@
-SETTINGS_STORAGE_KEY = "JSSnakeSettings";
+const SETTINGS_STORAGE_KEY = "JSSnakeSettings";
 
 const CELL_TYPES = {
   empty: "empty",
@@ -7,7 +7,7 @@ const CELL_TYPES = {
   snakeHead: "snakeHead",
 };
 
-COLORS = {
+const COLORS = {
   snakeSegment: "CornflowerBlue",
   snakeHead: "white",
   segmentBorder: "SlateBlue",

@@ -3,7 +3,7 @@
 // and game loop. You can find helper functions in snake-lib.js
 
 const endGame = (message = "Game is over") => {
-  drawGameIsOver(message);
+  drawGameIsOver(elCanvas, message);
   clearInterval(interval);
 };
 
@@ -116,11 +116,11 @@ const pauseUnpause = () => {
 };
 
 const handleEvents = () => {
-  document.getElementById("pauseUnpause").onclick = (e) => {
+  document.getElementById("pauseUnpause").onclick = () => {
     pauseUnpause();
   };
 
-  document.getElementById("resetSettings").onclick = (e) => {
+  document.getElementById("resetSettings").onclick = () => {
     localStorage.setItem(
       SETTINGS_STORAGE_KEY,
       JSON.stringify(DEFAULT_SETTINGS)
@@ -128,7 +128,7 @@ const handleEvents = () => {
     location.reload();
   };
 
-  document.getElementById("showHelp").onclick = (e) => {
+  document.getElementById("showHelp").onclick = () => {
     alert(
       `
 Help

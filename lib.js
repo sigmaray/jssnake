@@ -47,7 +47,7 @@ const validateSettings = (settings) => {
   return valid;
 };
 
-const drawGameIsOver = (message = "Game is over") => {
+const drawGameIsOver = (elCanvas, message = "Game is over") => {
   const ctx = elCanvas.getContext("2d");
   ctx.clearRect(0, 0, elCanvas.width, elCanvas.height);
   ctx.fillStyle = COLORS.text;
@@ -86,7 +86,9 @@ const settingsFromStorage = () => {
   let settings;
   try {
     settings = JSON.parse(localStorage.getItem(SETTINGS_STORAGE_KEY));
-  } catch {}
+  } catch {
+    settings = {};
+  }
   if (!settings || typeof settings !== "object") settings = {};
   return settings;
 };
@@ -108,8 +110,8 @@ const fixSettings = (settings, DEFAULT_SETTINGS) => {
 };
 
 const snakeAndFoodToMatrix = (snakeSegments, cellNum, food = null) => {
-  const matrix = Array.from(Array(cellNum)).map((_) =>
-    Array.from(Array(cellNum)).map((_) => CELL_TYPES.empty)
+  const matrix = Array.from(Array(cellNum)).map(() =>
+    Array.from(Array(cellNum)).map(() => CELL_TYPES.empty)
   );
   snakeSegments.forEach((segment, i) => {
     matrix[segment.y][segment.x] =
@@ -121,7 +123,7 @@ const snakeAndFoodToMatrix = (snakeSegments, cellNum, food = null) => {
   return matrix;
 };
 
-const generateFoodPosition = (snakeSegments, cellNum, food = null) => {
+const generateFoodPosition = (snakeSegments, cellNum) => {
   const matrix = snakeAndFoodToMatrix(snakeSegments, cellNum);
   const availableCells = [];
   matrix.forEach((row, y) => {
