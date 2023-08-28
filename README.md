@@ -1,6 +1,6 @@
 # JavaScript Snake
 
-Classic snake with few improvements.
+Classic snake with a few improvements.
 
 I have added settings to the game:
 * Check if snake goes out of game board. If checkbox is set game will end, otherwise it will continue

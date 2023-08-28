@@ -99,8 +99,7 @@ const gameCycle = () => {
   renderMatrixToCanvas(
     snakeAndFoodToMatrix(state.snakeSegments, settings.cellNum, state.food),
     elCanvas,
-    segmentWidth,
-    segmentHeight
+    settings.cellSize
   );
 
   state.switchingDirection = false;
@@ -236,9 +235,6 @@ let settings = settingsFromStorage();
 // If settings have wrong values, we are fixing them.
 settings = fixSettings(settings, DEFAULT_SETTINGS);
 
-const segmentWidth = settings.canvasSize / settings.cellNum;
-const segmentHeight = settings.canvasSize / settings.cellNum;
-
 settingsToFormElements(settings);
 
 localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
@@ -262,7 +258,7 @@ let state = {
 };
 
 // Canvas size depends on settings, that's why we append canvas dynamically
-const elCanvas = appendCanvas(settings.canvasSize);
+const elCanvas = appendCanvas(settings.cellNum, settings.cellSize);
 
 handleEvents();
 
@@ -271,6 +267,5 @@ interval = setInterval(gameCycle, settings.intervalMilliseconds);
 renderMatrixToCanvas(
   snakeAndFoodToMatrix(state.snakeSegments, settings.cellNum, state.food),
   elCanvas,
-  segmentWidth,
-  segmentHeight
+  settings.cellSize
 );

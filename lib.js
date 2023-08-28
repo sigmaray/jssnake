@@ -34,20 +34,11 @@ const isColliding = (snakeSegments) => {
 
 const validateSettings = (settings) => {
   let valid = true;
-  ["canvasSize", "cellNum", "intervalMilliseconds"].forEach((key) => {
+  ["cellSize", "cellNum", "intervalMilliseconds"].forEach((key) => {
     if (!settings[key] || Number.parseInt(settings[key]) <= 0) {
       valid = false;
     }
   });
-
-  if (
-    Number.parseInt(settings["canvasSize"]) < Number.parseInt(settings["cellNum"])
-  )
-    valid = false;
-
-  if (Number.parseInt(settings["canvasSize"]) < 10) {
-    valid = false;
-  }
 
   if (Number.parseInt(settings["cellNum"]) < 2) {
     valid = false;
@@ -162,8 +153,7 @@ const settingsToFormElements = (settings) => {
 const renderMatrixToCanvas = (
   matrix,
   elCanvas,
-  segmentWidth,
-  segmentHeight
+  cellSize
 ) => {
   const ctx = elCanvas.getContext("2d");
   ctx.clearRect(0, 0, elCanvas.width, elCanvas.height);
@@ -181,10 +171,10 @@ const renderMatrixToCanvas = (
 
         drawRectangle(
           ctx,
-          x * segmentWidth,
-          y * segmentHeight,
-          segmentHeight,
-          segmentWidth,
+          x * cellSize,
+          y * cellSize,
+          cellSize,
+          cellSize,
           color,
           COLORS.segmentBorder
         );
@@ -193,7 +183,7 @@ const renderMatrixToCanvas = (
   });
 };
 
-const appendCanvas = (canvasSize) => {
+const appendCanvas = (cellNum, cellSize) => {
   const elCanvas = document.createElement("canvas");
   elCanvas.setAttribute(
     "style",
@@ -203,8 +193,8 @@ const appendCanvas = (canvasSize) => {
     `
   );
 
-  elCanvas.setAttribute("width", canvasSize);
-  elCanvas.setAttribute("height", canvasSize);
+  elCanvas.setAttribute("width", cellSize * cellNum);
+  elCanvas.setAttribute("height", cellSize * cellNum);
   document.body.appendChild(elCanvas);
   return elCanvas;
 };

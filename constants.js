@@ -17,7 +17,7 @@ COLORS = {
 };
 
 const DEFAULT_SETTINGS = {
-  canvasSize: 500,
+  cellSize: 20,
   cellNum: 15,
   intervalMilliseconds: 150,
   checkIsOut: false,
