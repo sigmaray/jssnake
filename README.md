@@ -13,7 +13,7 @@ Settings are save in web storage.
 
 ## Demo
 
-http://sigmaray.com/jssnake/
+https://sigmaray.github.io/jssnake/
 
 ## How to play
 * Pause/unpause: p key
