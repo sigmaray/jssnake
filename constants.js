@@ -26,4 +26,5 @@ window.constants.DEFAULT_SETTINGS = {
   intervalMilliseconds: 150,
   checkIsOut: false,
   checkIsColliding: false,
+  disableTimer: false,
 };

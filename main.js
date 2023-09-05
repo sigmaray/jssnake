@@ -48,7 +48,9 @@ function JSSnake() {
     this.handleEvents();
 
     // Trigger game logic every N milliseconds
-    this.interval = setInterval(this.gameIteration, this.settings.intervalMilliseconds);
+    if (!this.settings.disableTimer) {
+      this.interval = setInterval(this.gameIteration, this.settings.intervalMilliseconds);
+    }
 
     // Draw matrix (2D array) values on <canvas>
     window.lib.renderMatrixToCanvas(
@@ -304,7 +306,7 @@ function JSSnake() {
           }
 
           // If user pressed key equal to snake direction: move snake faster
-          if (toSpeedUp) {
+          if (toSpeedUp || this.settings.disableTimer) {
             this.gameIteration();
           }
         }
