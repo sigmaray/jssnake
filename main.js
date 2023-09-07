@@ -21,13 +21,7 @@ function JSSnake() {
     // Write fixed settings into local storage
     localStorage.setItem(window.constants.SETTINGS_STORAGE_KEY, JSON.stringify(this.settings));
 
-    const snakeSegments = [
-      { x: 0, y: 0 },
-      { x: 1, y: 0 },
-      { x: 2, y: 0 },
-      { x: 3, y: 0 },
-      { x: 4, y: 0 },
-    ];
+    const snakeSegments = Array.from(Array(this.settings.cellNum)).map((_, i) => ({ x: i, y: 0 }));
 
     // Generate food in random cell not occupied by the snake
     const food = window.lib.generateFoodPosition(snakeSegments, this.settings.cellNum);
@@ -62,6 +56,8 @@ function JSSnake() {
       this.elCanvas,
       this.settings.cellSize,
     );
+
+    this.showDebug();
   };
 
   // End the game: reset timer and show a message
@@ -194,6 +190,8 @@ function JSSnake() {
     );
 
     if (this.state.switchingDirection) this.state.switchingDirection = false;
+
+    this.showDebug();
   };
 
   // On pause/unpause button click (or on "P" key press)
@@ -282,7 +280,10 @@ function JSSnake() {
             case keyCodes.left:
               if (this.state.snakeDirection === 'left') {
                 toSpeedUp = true;
-              } else if (this.state.snakeDirection !== 'left' && this.state.snakeDirection !== 'right') {
+              } else if (
+                this.state.snakeDirection !== 'left'
+                && this.state.snakeDirection !== 'right'
+              ) {
                 this.state.snakeDirection = 'left';
                 this.state.switchingDirection = true;
               }
@@ -290,7 +291,10 @@ function JSSnake() {
             case keyCodes.up:
               if (this.state.snakeDirection === 'up') {
                 toSpeedUp = true;
-              } else if (this.state.snakeDirection !== 'up' && this.state.snakeDirection !== 'down') {
+              } else if (
+                this.state.snakeDirection !== 'up'
+                && this.state.snakeDirection !== 'down'
+              ) {
                 this.state.snakeDirection = 'up';
                 this.state.switchingDirection = true;
               }
@@ -298,7 +302,10 @@ function JSSnake() {
             case keyCodes.down:
               if (this.state.snakeDirection === 'down') {
                 toSpeedUp = true;
-              } else if (this.state.snakeDirection !== 'down' && this.state.snakeDirection !== 'up') {
+              } else if (
+                this.state.snakeDirection !== 'down'
+                && this.state.snakeDirection !== 'up'
+              ) {
                 this.state.snakeDirection = 'down';
                 this.state.switchingDirection = true;
               }
@@ -310,6 +317,8 @@ function JSSnake() {
             this.gameIteration();
           }
         }
+
+        this.showDebug();
       }
     });
 
@@ -336,6 +345,25 @@ function JSSnake() {
         alert('Wrong values. Try to change values and save one more time');
       }
     };
+  };
+
+  // Print all important variables inside the page
+  this.showDebug = () => {
+    if (this.settings.showDebug) {
+      document.getElementById('debug').innerHTML = `<pre>${JSON.stringify({
+        'this.state': this.state,
+      })}</pre>`;
+      document.getElementById('debug').innerHTML += `<pre>${JSON.stringify({
+        snakeAndFoodToMatrix: window.lib.snakeAndFoodToMatrix(
+          this.state.snakeSegments,
+          this.settings.cellNum,
+          this.state.food,
+        ),
+      })}</pre>`;
+      document.getElementById('debug').innerHTML += `<pre>${JSON.stringify({
+        'this.settings': this.settings,
+      })}</pre>`;
+    }
   };
 }
 
