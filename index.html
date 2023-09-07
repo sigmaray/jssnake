@@ -11,15 +11,21 @@
               >
             </p>
             <p>
+              <input type="checkbox" id="checkIsColliding" />
+              <label for="checkIsColliding"
+                >check if snake is colliding with itself</label
+              >
+            </p>
+            <p>
               <input type="checkbox" id="disableTimer" />
               <label for="disableTimer"
                 >disable timer</label
               >
             </p>
             <p>
-              <input type="checkbox" id="checkIsColliding" />
-              <label for="checkIsColliding"
-                >check if snake is colliding with itself</label
+              <input type="checkbox" id="showDebug" />
+              <label for="showDebug"
+                >show debug info</label
               >
             </p>
             <p>
@@ -60,6 +66,12 @@
             </button>
           </p>
         </td>
+      </tr>
+    </table>
+    <table>
+      <tr>
+        <td id="canvasContainer" valign="top"></td>
+        <td id="debug"></td>
       </tr>
     </table>
     <script src="constants.js"></script>

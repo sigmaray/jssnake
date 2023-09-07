@@ -208,6 +208,6 @@ window.lib.appendCanvas = (cellNum, cellSize) => {
 
   elCanvas.setAttribute('width', cellSize * cellNum);
   elCanvas.setAttribute('height', cellSize * cellNum);
-  document.body.appendChild(elCanvas);
+  document.getElementById('canvasContainer').appendChild(elCanvas);
   return elCanvas;
 };

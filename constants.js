@@ -22,9 +22,10 @@ window.constants.COLORS = {
 
 window.constants.DEFAULT_SETTINGS = {
   cellSize: 20,
-  cellNum: 15,
+  cellNum: 5,
   intervalMilliseconds: 150,
   checkIsOut: false,
   checkIsColliding: false,
   disableTimer: false,
+  showDebug: false,
 };
