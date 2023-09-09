@@ -21,7 +21,12 @@ function JSSnake() {
     // Write fixed settings into local storage
     localStorage.setItem(window.constants.SETTINGS_STORAGE_KEY, JSON.stringify(this.settings));
 
-    const snakeSegments = Array.from(Array(this.settings.cellNum)).map((_, i) => ({ x: i, y: 0 }));
+    const snakeSegments = Array.from(
+      Array(
+        // this.settings.cellNum
+        1,
+      ),
+    ).map((_, i) => ({ x: i, y: 0 }));
 
     // Generate food in random cell not occupied by the snake
     const food = window.lib.generateFoodPosition(snakeSegments, this.settings.cellNum);
