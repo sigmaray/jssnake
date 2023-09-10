@@ -82,8 +82,6 @@ function JSSnake() {
   //
   // Mutates: this.state, this.interval
   this.gameIteration = () => {
-    const ateFood = window.lib.isEating(this.state.snakeSegments, this.state.food);
-
     // Deep copy last segment of snake
     const head = this.state.snakeSegments.last();
     let newHead = JSON.parse(JSON.stringify(head));
@@ -148,6 +146,11 @@ function JSSnake() {
         break;
     }
 
+    // Insert new head
+    this.state.snakeSegments.push(newHead);
+
+    const ateFood = window.lib.isEating(this.state.snakeSegments, this.state.food);
+
     if (!ateFood) {
       // Snake didn't eat food. Delete snake tail
       this.state.snakeSegments.shift();
@@ -164,9 +167,6 @@ function JSSnake() {
         return;
       }
     }
-
-    // Insert new head
-    this.state.snakeSegments.push(newHead);
 
     if (
       this.settings.checkIsOut

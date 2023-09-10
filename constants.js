@@ -12,16 +12,20 @@ window.constants.CELL_TYPES = {
 };
 
 window.constants.COLORS = {
-  snakeSegment: 'CornflowerBlue',
-  snakeHead: 'white',
-  segmentBorder: 'SlateBlue',
-  food: '#DDA0DD',
+  emptyCell: 'LightGray',
+  // snakeSegment: 'CornflowerBlue',
+  snakeSegment: 'ForestGreen',
+  // snakeHead: 'white',
+  snakeHead: 'Chartreuse',
+  // segmentBorder: 'SlateBlue',
+  // food: '#DDA0DD',
+  food: 'Red',
   text: 'SlateBlue',
   canvasColor: '#eee',
 };
 
 window.constants.DEFAULT_SETTINGS = {
-  cellSize: 20,
+  cellSize: 40,
   cellNum: 5,
   intervalMilliseconds: 220,
   checkIsOut: false,
