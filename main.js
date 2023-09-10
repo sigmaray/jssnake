@@ -1,6 +1,6 @@
 function JSSnake() {
   // Game variables
-  this.settings = {}; // game settings that are being loaded from web storage or saved into it
+  this.settings = {}; // game settings that are loaded from web storage or saved into it
   this.state = {}; // game state
   this.elCanvas = null; // <canvas> element added dynamically from javascript
   this.interval = null; // intervalID set by setInterval
@@ -241,7 +241,7 @@ function JSSnake() {
   * move: left/right/up/down keys
   * restart: ctrl+r/f5
   
-  Settings are being saved in web storage
+  Settings are saved in web storage
       `.trim(),
       );
     };
@@ -327,7 +327,7 @@ function JSSnake() {
       }
     });
 
-    // When settings form is being submitted:
+    // When settings form is submitted:
     // * Validate new settings
     // * If new settings are wrong, show alert and do nothing
     // * If new settings are valid,
