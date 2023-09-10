@@ -171,26 +171,29 @@ window.lib.renderMatrixToCanvas = (matrix, elCanvas, cellSize) => {
   ctx.clearRect(0, 0, elCanvas.width, elCanvas.height);
   matrix.forEach((row, y) => {
     row.forEach((value, x) => {
-      if (value !== window.constants.CELL_TYPES.empty) {
-        let color;
-        if (value === window.constants.CELL_TYPES.snakeSegment) {
-          color = window.constants.COLORS.snakeSegment;
-        } else if (value === window.constants.CELL_TYPES.snakeHead) {
-          color = window.constants.COLORS.snakeHead;
-        } else if (value === window.constants.CELL_TYPES.food) {
-          color = window.constants.COLORS.food;
-        }
-
-        window.lib.drawRectangle(
-          ctx,
-          x * cellSize,
-          y * cellSize,
-          cellSize,
-          cellSize,
-          color,
-          window.constants.COLORS.segmentBorder,
-        );
+      let color;
+      if (value === window.constants.CELL_TYPES.empty) {
+        color = window.constants.COLORS.emptyCell;
       }
+      else if (value === window.constants.CELL_TYPES.snakeSegment) {
+        color = window.constants.COLORS.snakeSegment;
+      } else if (value === window.constants.CELL_TYPES.snakeHead) {
+        color = window.constants.COLORS.snakeHead;
+      } else if (value === window.constants.CELL_TYPES.food) {
+        color = window.constants.COLORS.food;
+      }
+
+      window.lib.drawRectangle(
+        ctx,
+        x * cellSize,
+        y * cellSize,
+        cellSize,
+        cellSize,
+        color,
+        window.constants.COLORS.segmentBorder,
+        0,
+        3,
+      );
     });
   });
 };
