@@ -122,7 +122,7 @@ window.lib.fixSettings = (settings, DEFAULT_SETTINGS) => {
 window.lib.snakeAndFoodToMatrix = (snakeSegments, cellNum, food = null) => {
   const matrix = Array.from(Array(cellNum)).map(
     // eslint-disable-next-line
-    () => Array.from(Array(cellNum)).map(() => window.constants.CELL_TYPES.empty)
+    () => Array.from(Array(cellNum)).map(() => window.constants.CELL_TYPES.empty),
   );
   snakeSegments.forEach((segment, i) => {
     matrix[segment.y][segment.x] = i === snakeSegments.length - 1
@@ -174,8 +174,7 @@ window.lib.renderMatrixToCanvas = (matrix, elCanvas, cellSize) => {
       let color;
       if (value === window.constants.CELL_TYPES.empty) {
         color = window.constants.COLORS.emptyCell;
-      }
-      else if (value === window.constants.CELL_TYPES.snakeSegment) {
+      } else if (value === window.constants.CELL_TYPES.snakeSegment) {
         color = window.constants.COLORS.snakeSegment;
       } else if (value === window.constants.CELL_TYPES.snakeHead) {
         color = window.constants.COLORS.snakeHead;
