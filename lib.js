@@ -50,6 +50,10 @@ window.lib.validateSettings = (settings) => {
     valid = false;
   }
 
+  if (Number.parseInt(settings.cellSize, 10) < 10) {
+    valid = false;
+  }
+
   return valid;
 };
 
